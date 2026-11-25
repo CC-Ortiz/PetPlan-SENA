@@ -4,13 +4,13 @@
 ## Instrucciones
 
 No requiere Composer ni MariaDB para probar Java. Desde la raíz:
-
+```powershell
 java -version
 mvnw -version
 cd backend
 mvnw compile
 mvnw spring-boot:run
-
+```
 En la consola de Java busca la contraseña temporal generada por Spring Security. En otra terminal:
 
 ```powershell
