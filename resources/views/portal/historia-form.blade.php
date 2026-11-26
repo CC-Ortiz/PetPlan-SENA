@@ -1,0 +1,3 @@
+@extends('layouts.portal')
+@section('titulo','Registrar historia clínica')
+@section('contenido')<div class="pp-panel"><form class="pp-form" method="post" action="{{route('historias.store',$id)}}">@csrf <label>Mascota atendida<select name="codigo_mascota" required>@foreach($mascotas as $m)<option value="{{$m['codigo_mascota']}}">{{$m['nombre_mascota']}} · {{$m['nombres']}} {{$m['apellidos']}}</option>@endforeach</select></label><label>Diagnóstico<textarea name="diagnostico" required>{{old('diagnostico')}}</textarea></label><label>Observaciones<textarea name="observaciones">{{old('observaciones')}}</textarea></label><button class="btn btn-primary">Guardar historia</button></form></div>@endsection

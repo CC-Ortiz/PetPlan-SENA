@@ -92,4 +92,13 @@ class PortalController extends Controller {
     public function crearAdmin(Request $r) { $d=$this->api->request('POST','/administradores',$this->cuenta($r));return redirect()->route('cuentas')->with('status','Administrador creado: código '.$d['codigo_usuario'].'. Asigna la clínica en PETPLAN_ADMIN_CLINICAS.'); }
     public function crearVet(Request $r) { return $this->ok('POST','/veterinarios',$this->cuenta($r),'cuentas'); }
     public function editarVet(Request $r,$id) { return $this->ok('PUT','/veterinarios/'.$id,$r->only('nombres','apellidos','numero_contacto','num_licencia'),'cuentas'); }
+    public function citas(Request $r) { return view('portal.citas',['citas'=>$this->get('/citas',$r->only('desde','hasta','estado','veterinaria')),'clinicas'=>$this->get('/veterinarias')]); }
+    public function agendar() { return view('portal.agendar',['clinicas'=>$this->get('/veterinarias')]); }
+    public function crearCita(Request $r) { return $this->ok('POST','/citas',$r->only('tipo_cita','descripcion','fecha','codigo_veterinarias'),'citas.index'); }
+    public function reprogramar(Request $r,$id) { return $this->ok('PUT','/citas/'.$id,$r->only('fecha'),'citas.index'); }
+    public function cancelar($id) { return $this->ok('DELETE','/citas/'.$id,[],'citas.index'); }
+    public function aceptar($id) { return $this->ok('POST','/citas/'.$id.'/aceptar',[],'citas.index'); }
+    public function historiaForm($id) { return view('portal.historia-form',['id'=>$id,'mascotas'=>$this->get('/citas/'.$id.'/mascotas')]); }
+    public function historia(Request $r,$id) { return $this->ok('POST','/citas/'.$id.'/historia',$r->only('codigo_mascota','diagnostico','observaciones'),'citas.index'); }
+    public function historial(Request $r) { $f=$r->only('mascota','desde','hasta','cita');$vet=$this->role()==='VETERINARIO';return view('portal.historial',['registros'=>$this->get('/historial',$f),'mascotas'=>$vet?$this->get('/citas/'.(int)$r->query('cita').'/mascotas'):$this->get('/mascotas'),'cita'=>$vet?$r->query('cita'):null]); }
 }
