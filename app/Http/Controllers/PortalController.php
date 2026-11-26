@@ -76,4 +76,12 @@ class PortalController extends Controller {
     public function perfil() { return view('portal.perfil',['usuario'=>$this->get('/me')]); }
     public function editarPerfil(Request $r) { return $this->ok('PUT','/perfil',$r->only('nombres','apellidos','numero_contacto'),'perfil'); }
     public function password(Request $r) { $this->api->request('PUT','/password',$r->only('actual','password','password_confirmation')); $r->session()->invalidate(); $r->session()->regenerateToken(); return redirect()->route('login')->with('status','Contraseña actualizada.'); }
+    public function mascotas() { return view('portal.mascotas',['mascotas'=>$this->get('/mascotas')]); }
+    public function mascota($id) { return view('portal.mascota',['mascota'=>$this->get('/mascotas/'.$id),'editar'=>false]); }
+    public function nuevaMascota() { return view('portal.mascota',['mascota'=>null,'editar'=>true]); }
+    public function editarMascota($id) { return view('portal.mascota',['mascota'=>$this->get('/mascotas/'.$id),'editar'=>true]); }
+    private function pet(Request $r): array { $d=$r->only('nombre_mascota','especie','edad','peso'); foreach (['edad','peso'] as $key) if (($d[$key]??null)==='') $d[$key]=null; return $d; }
+    public function crearMascota(Request $r) { return $this->ok('POST','/mascotas',$this->pet($r),'mascotas.index'); }
+    public function guardarMascota(Request $r,$id) { return $this->ok('PUT','/mascotas/'.$id,$this->pet($r),'mascotas.index'); }
+    public function eliminarMascota($id) { return $this->ok('DELETE','/mascotas/'.$id,[],'mascotas.index'); }
 }

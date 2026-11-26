@@ -18,3 +18,12 @@ Route::middleware(PortalAuth::class)->group(function(){
  Route::put('/perfil',[PortalController::class,'editarPerfil'])->name('perfil.update');
  Route::put('/password',[PortalController::class,'password'])->name('perfil.password');
 });
+Route::middleware(PortalAuth::class.':USUARIO')->group(function(){
+ Route::get('/mascotas',[PortalController::class,'mascotas'])->name('mascotas.index');
+ Route::get('/mascotas/nueva',[PortalController::class,'nuevaMascota'])->name('mascotas.create');
+ Route::post('/mascotas',[PortalController::class,'crearMascota'])->name('mascotas.store');
+ Route::get('/mascotas/{id}',[PortalController::class,'mascota'])->whereNumber('id')->name('mascotas.show');
+ Route::get('/mascotas/{id}/editar',[PortalController::class,'editarMascota'])->whereNumber('id')->name('mascotas.edit');
+ Route::put('/mascotas/{id}',[PortalController::class,'guardarMascota'])->whereNumber('id')->name('mascotas.update');
+ Route::delete('/mascotas/{id}',[PortalController::class,'eliminarMascota'])->whereNumber('id')->name('mascotas.destroy');
+});
