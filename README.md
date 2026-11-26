@@ -49,10 +49,15 @@ $env:DB_PASSWORD='TU_CONTRASENA_MYSQL'
 ```
 
 Utiliza los mismos datos de conexión de `.env`.
+Para habilitar al administrador de demostración, copia en esta terminal el comando 
+```powershell
+$env:PETPLAN_ADMIN_CLINICAS='3:1'
+```
+
 Inicia Java:
 
 ```powershell
-mvn spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
 Tomcat escucha en el puerto 8080. Se requiere Maven instalado; el proyecto no incluye Maven Wrapper. Spring Boot valida el esquema sin modificarlo.
@@ -78,14 +83,3 @@ Todas tienen la contraseña inicial `Demo1234`.
 | Administrador | `admin@demo.test` |
 | Superadministrador | `super@demo.test` |
 
-Son cuentas ficticias con contraseña conocida, solo para uso local. Las contraseñas se guardan con BCrypt. No publiques esta base ni uses estas cuentas en producción. Si modificas una contraseña desde la aplicación, el seeder no la restablece. Para cargar las cuentas en una base ya migrada, ejecuta `php artisan db:seed`.
-
-En esta entrega se pueden probar las cuentas y las funciones disponibles; la administración de clínicas se incorpora en ST02.2.
-
-## 5. Comprobar el funcionamiento
-
-El panel recupera el diseño de PetPlan: barra lateral, cabecera, tarjetas y accesos rápidos. Comprueba que cada rol solo vea sus módulos disponibles y que los totales correspondan a los datos de la API.
-
-Comprueba conexión, registro, inicio de sesión de las cuatro cuentas y perfil. Detén Java temporalmente y comprueba que Laravel informa de la indisponibilidad; reinicia e inicia sesión nuevamente.
-
-Para cambiar de etapa, detén ambos servidores y descomprime la siguiente versión en otra carpeta. Reiniciar Java requiere iniciar sesión otra vez. La recuperación de contraseña requiere SMTP configurado en Java. La compilación y las pruebas de ejecución no se verificaron en el entorno de preparación.

@@ -8,6 +8,7 @@ class PortalController extends Controller {
     private function get(string $path, array $filters=[]): array { return $this->api->request('GET',$path,$filters); }
     private function role(): string { return session('petplan_usuario.rol'); }
     private function datos(Request $r,array $fields): array { return $r->only($fields); }
+    private function cuenta(Request $r): array { return $r->only('nombres','apellidos','email','numero_contacto','numero_documento','user','password','password_confirmation','num_licencia','codigo_veterinarias'); }
     private function ok(string $method,string $endpoint,array $data=[],string $route='dashboard') { $this->api->request($method,$endpoint,$data); return redirect()->route($route)->with('status','Operación completada.'); }
     public function dashboard() {
         $rol = $this->role();
@@ -76,4 +77,19 @@ class PortalController extends Controller {
     public function perfil() { return view('portal.perfil',['usuario'=>$this->get('/me')]); }
     public function editarPerfil(Request $r) { return $this->ok('PUT','/perfil',$r->only('nombres','apellidos','numero_contacto'),'perfil'); }
     public function password(Request $r) { $this->api->request('PUT','/password',$r->only('actual','password','password_confirmation')); $r->session()->invalidate(); $r->session()->regenerateToken(); return redirect()->route('login')->with('status','Contraseña actualizada.'); }
+    public function mascotas() { return view('portal.mascotas',['mascotas'=>$this->get('/mascotas')]); }
+    public function mascota($id) { return view('portal.mascota',['mascota'=>$this->get('/mascotas/'.$id),'editar'=>false]); }
+    public function nuevaMascota() { return view('portal.mascota',['mascota'=>null,'editar'=>true]); }
+    public function editarMascota($id) { return view('portal.mascota',['mascota'=>$this->get('/mascotas/'.$id),'editar'=>true]); }
+    private function pet(Request $r): array { $d=$r->only('nombre_mascota','especie','edad','peso'); foreach (['edad','peso'] as $key) if (($d[$key]??null)==='') $d[$key]=null; return $d; }
+    public function crearMascota(Request $r) { return $this->ok('POST','/mascotas',$this->pet($r),'mascotas.index'); }
+    public function guardarMascota(Request $r,$id) { return $this->ok('PUT','/mascotas/'.$id,$this->pet($r),'mascotas.index'); }
+    public function eliminarMascota($id) { return $this->ok('DELETE','/mascotas/'.$id,[],'mascotas.index'); }
+    public function veterinarias() { return view('portal.veterinarias',['clinicas'=>$this->get('/veterinarias')]); }
+    public function crearClinica(Request $r) { return $this->ok('POST','/veterinarias',$r->only('nit','nombre','contacto'),'veterinarias.index'); }
+    public function estadoClinica(Request $r,$id) { return $this->ok('PUT','/veterinarias/'.$id.'/estado',$r->only('estado'),'veterinarias.index'); }
+    public function cuentas() { $admin=$this->role()==='SUPERADMINISTRADOR'; return view('portal.cuentas',['veterinarios'=>$this->get('/veterinarios'),'administradores'=>$admin?$this->get('/administradores'):[],'clinicas'=>$admin?$this->get('/veterinarias'):[]]); }
+    public function crearAdmin(Request $r) { $d=$this->api->request('POST','/administradores',$this->cuenta($r));return redirect()->route('cuentas')->with('status','Administrador creado: código '.$d['codigo_usuario'].'. Asigna la clínica en PETPLAN_ADMIN_CLINICAS.'); }
+    public function crearVet(Request $r) { return $this->ok('POST','/veterinarios',$this->cuenta($r),'cuentas'); }
+    public function editarVet(Request $r,$id) { return $this->ok('PUT','/veterinarios/'.$id,$r->only('nombres','apellidos','numero_contacto','num_licencia'),'cuentas'); }
 }

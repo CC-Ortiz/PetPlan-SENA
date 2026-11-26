@@ -17,4 +17,24 @@ Route::middleware(PortalAuth::class)->group(function(){
  Route::get('/perfil',[PortalController::class,'perfil'])->name('perfil');
  Route::put('/perfil',[PortalController::class,'editarPerfil'])->name('perfil.update');
  Route::put('/password',[PortalController::class,'password'])->name('perfil.password');
+ Route::get('/veterinarias',[PortalController::class,'veterinarias'])->name('veterinarias.index');
+});
+Route::middleware(PortalAuth::class.':USUARIO')->group(function(){
+ Route::get('/mascotas',[PortalController::class,'mascotas'])->name('mascotas.index');
+ Route::get('/mascotas/nueva',[PortalController::class,'nuevaMascota'])->name('mascotas.create');
+ Route::post('/mascotas',[PortalController::class,'crearMascota'])->name('mascotas.store');
+ Route::get('/mascotas/{id}',[PortalController::class,'mascota'])->whereNumber('id')->name('mascotas.show');
+ Route::get('/mascotas/{id}/editar',[PortalController::class,'editarMascota'])->whereNumber('id')->name('mascotas.edit');
+ Route::put('/mascotas/{id}',[PortalController::class,'guardarMascota'])->whereNumber('id')->name('mascotas.update');
+ Route::delete('/mascotas/{id}',[PortalController::class,'eliminarMascota'])->whereNumber('id')->name('mascotas.destroy');
+});
+Route::middleware(PortalAuth::class.':ADMINISTRADOR,SUPERADMINISTRADOR')->group(function(){
+ Route::get('/cuentas',[PortalController::class,'cuentas'])->name('cuentas');
+ Route::post('/veterinarios',[PortalController::class,'crearVet'])->name('veterinarios.store');
+ Route::put('/veterinarios/{id}',[PortalController::class,'editarVet'])->whereNumber('id')->name('veterinarios.update');
+});
+Route::middleware(PortalAuth::class.':SUPERADMINISTRADOR')->group(function(){
+ Route::post('/veterinarias',[PortalController::class,'crearClinica'])->name('veterinarias.store');
+ Route::put('/veterinarias/{id}/estado',[PortalController::class,'estadoClinica'])->whereNumber('id')->name('veterinarias.estado');
+ Route::post('/administradores',[PortalController::class,'crearAdmin'])->name('administradores.store');
 });
