@@ -30,6 +30,7 @@
         </div>
     </header>
 
+    @if(session('status')) <p role="status" class="container">{{ session('status') }}</p> @endif
     @yield('contenido')
 
     <footer>
