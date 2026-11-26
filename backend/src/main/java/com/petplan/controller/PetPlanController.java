@@ -6,8 +6,8 @@ import java.util.*; import java.io.IOException;
 import static com.petplan.service.CuentaService.*; import static com.petplan.service.Reglas.*;
 @RestController @RequestMapping("/api")
 public class PetPlanController {
- private final CuentaService cuentas;private final MascotaService mascotas;private final VeterinariaService vets;private final ClinicaService clinica;
- public PetPlanController(CuentaService c,MascotaService m,VeterinariaService v,ClinicaService cl){cuentas=c;mascotas=m;vets=v;clinica=cl;}
+ private final CuentaService cuentas;private final MascotaService mascotas;private final VeterinariaService vets;private final ClinicaService clinica;private final ReporteService reportes;
+ public PetPlanController(CuentaService c,MascotaService m,VeterinariaService v,ClinicaService cl,ReporteService r){cuentas=c;mascotas=m;vets=v;clinica=cl;reportes=r;}
  private long u(CuentaService.Actor actor){actor.exige(USUARIO);return actor.id();}
  @GetMapping("/comprobacion") public Map<String,String> check(){return Map.of("estado","OK");}
  @PostMapping("/registro") @ResponseStatus(HttpStatus.CREATED) public Object registro(@RequestBody Map<String,Object>d){return cuentas.registro(d);}
@@ -40,4 +40,5 @@ public class PetPlanController {
  @PostMapping("/citas/{id}/historia") @ResponseStatus(HttpStatus.NO_CONTENT) public void historia(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id,@RequestBody Map<String,Object>d){clinica.historia(actor,id,d);}
  @GetMapping("/historial") public Object historial(@AuthenticationPrincipal CuentaService.Actor actor,@RequestParam Map<String,String> f){return clinica.historiales(actor,f);}
  @GetMapping("/citas/{id}/mascotas") public Object mascotasCita(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){return clinica.mascotasCita(actor,id);}
+ @GetMapping("/reportes/historial") public ResponseEntity<byte[]> reporte(@AuthenticationPrincipal CuentaService.Actor actor,@RequestParam Map<String,String> f)throws IOException{return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).header("Content-Disposition","attachment; filename=petplan-historial.pdf").body(reportes.generar(clinica.historiales(actor,f)));}
 }

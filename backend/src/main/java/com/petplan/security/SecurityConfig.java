@@ -89,6 +89,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/citas/{id}").hasRole("USUARIO")
                 .requestMatchers(HttpMethod.DELETE, "/api/citas/{id}").hasRole("USUARIO")
                 .requestMatchers(HttpMethod.GET, "/api/historial").hasAnyRole("USUARIO", "VETERINARIO")
+                .requestMatchers(HttpMethod.GET, "/api/reportes/historial").hasAnyRole("USUARIO", "VETERINARIO")
                 .anyRequest().denyAll())
             .addFilterBefore(new TokenSesionFilter(cuentas), UsernamePasswordAuthenticationFilter.class)
             .build();

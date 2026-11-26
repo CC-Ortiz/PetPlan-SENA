@@ -1,5 +1,4 @@
 
-
 Frontend Laravel/PHP y backend Spring Boot con Spring Security.
 
 ## 1. Preparar el proyecto

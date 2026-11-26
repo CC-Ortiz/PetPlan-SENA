@@ -37,6 +37,7 @@ Route::middleware(PortalAuth::class.':USUARIO,VETERINARIO,ADMINISTRADOR')->group
 });
 Route::middleware(PortalAuth::class.':USUARIO,VETERINARIO')->group(function(){
  Route::get('/historial',[PortalController::class,'historial'])->name('historial.index');
+ Route::get('/reportes/historial',[PortalController::class,'reporte'])->name('historial.pdf');
 });
 Route::middleware(PortalAuth::class.':VETERINARIO')->group(function(){
  Route::post('/citas/{id}/aceptar',[PortalController::class,'aceptar'])->whereNumber('id')->name('citas.aceptar');
