@@ -14,6 +14,7 @@
                 <h1> Crea tu contraseña nueva </h1>
                 <p> Escribe una contraseña de al menos 8 caracteres </p>
 
+                @if($errors->any())<div role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
                 <form method="POST" action="{{ route('password.update') }}" novalidate>
                     @csrf
                     <div class="form-grupo">

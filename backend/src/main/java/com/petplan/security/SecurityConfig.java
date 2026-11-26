@@ -11,8 +11,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import java.io.IOException;
+import com.petplan.repository.Datos;
+import com.petplan.service.CuentaService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.util.List;
+import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
@@ -27,10 +36,30 @@ public class SecurityConfig {
         if (status == 401) response.setHeader("WWW-Authenticate", "Bearer");
         response.getWriter().write("{\"message\":\"" + message + "\"}");
     }
-    // En esta etapa aún no existen cuentas: no se crea ningún usuario técnico.
-    @Bean UserDetailsService usuarios() { return new InMemoryUserDetailsManager(); }
 
-    @Bean SecurityFilterChain api(HttpSecurity http) throws Exception {
+    @Bean
+    UserDetailsService usuarios(Datos db) {
+        return email -> {
+            var rows = db.lista("SELECT email,password,UPPER(rol) rol FROM usuario WHERE email=?",
+                email.strip().toLowerCase(Locale.ROOT));
+            if (rows.isEmpty()) throw new UsernameNotFoundException("Usuario no encontrado");
+            var row = rows.getFirst();
+            String rol = row.get("rol").toString();
+            if (!List.of("USUARIO", "VETERINARIO", "ADMINISTRADOR", "SUPERADMINISTRADOR").contains(rol))
+                throw new UsernameNotFoundException("Rol no válido");
+            return User.withUsername(row.get("email").toString())
+                .password(row.get("password").toString()).roles(rol).build();
+        };
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(UserDetailsService usuarios, BCryptPasswordEncoder encoder) {
+        var provider = new DaoAuthenticationProvider(usuarios);
+        provider.setPasswordEncoder(encoder);
+        return new ProviderManager(provider);
+    }
+    @Bean
+    SecurityFilterChain api(HttpSecurity http, CuentaService cuentas) throws Exception {
         // API local, sin cookies de autenticación. Laravel conserva CSRF en sus formularios.
         return http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(c -> c.ignoringRequestMatchers("/api/**"))
@@ -44,6 +73,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(a -> a
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/comprobacion").permitAll()
-                .anyRequest().denyAll()).build();
+                .requestMatchers(HttpMethod.POST, "/api/login", "/api/registro", "/api/recuperacion", "/api/reset").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/logout").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/perfil", "/api/password").authenticated()
+                .anyRequest().denyAll())
+            .addFilterBefore(new TokenSesionFilter(cuentas), UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 }
