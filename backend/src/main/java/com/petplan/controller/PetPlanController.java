@@ -6,8 +6,8 @@ import java.util.*; import java.io.IOException;
 import static com.petplan.service.CuentaService.*; import static com.petplan.service.Reglas.*;
 @RestController @RequestMapping("/api")
 public class PetPlanController {
- private final CuentaService cuentas;private final MascotaService mascotas;private final VeterinariaService vets;
- public PetPlanController(CuentaService c,MascotaService m,VeterinariaService v){cuentas=c;mascotas=m;vets=v;}
+ private final CuentaService cuentas;private final MascotaService mascotas;private final VeterinariaService vets;private final ClinicaService clinica;
+ public PetPlanController(CuentaService c,MascotaService m,VeterinariaService v,ClinicaService cl){cuentas=c;mascotas=m;vets=v;clinica=cl;}
  private long u(CuentaService.Actor actor){actor.exige(USUARIO);return actor.id();}
  @GetMapping("/comprobacion") public Map<String,String> check(){return Map.of("estado","OK");}
  @PostMapping("/registro") @ResponseStatus(HttpStatus.CREATED) public Object registro(@RequestBody Map<String,Object>d){return cuentas.registro(d);}
@@ -31,4 +31,10 @@ public class PetPlanController {
  @GetMapping("/veterinarios") public Object veterinarios(@AuthenticationPrincipal CuentaService.Actor actor){return vets.veterinarios(actor);}
  @PostMapping("/veterinarios") @ResponseStatus(HttpStatus.NO_CONTENT) public void vet(@AuthenticationPrincipal CuentaService.Actor actor,@RequestBody Map<String,Object>d){vets.crearVet(actor,d);}
  @PutMapping("/veterinarios/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void editarVet(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id,@RequestBody Map<String,Object>d){vets.editarVet(actor,id,d);}
+ @GetMapping("/citas") public Object citas(@AuthenticationPrincipal CuentaService.Actor actor,@RequestParam Map<String,String> f){return clinica.citas(actor,f);}
+ @GetMapping("/citas/{id}") public Object cita(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){return clinica.cita(actor,id);}
+ @PostMapping("/citas") @ResponseStatus(HttpStatus.CREATED) public Object agendar(@AuthenticationPrincipal CuentaService.Actor actor,@RequestBody Map<String,Object>d){return Map.of("codigo_cita",clinica.agendar(actor,d));}
+ @PutMapping("/citas/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void reprogramar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id,@RequestBody Map<String,Object>d){clinica.reprogramar(actor,id,d);}
+ @DeleteMapping("/citas/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void cancelar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){clinica.cancelar(actor,id);}
+ @PostMapping("/citas/{id}/aceptar") @ResponseStatus(HttpStatus.NO_CONTENT) public void aceptar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){clinica.confirmar(actor,id);}
 }

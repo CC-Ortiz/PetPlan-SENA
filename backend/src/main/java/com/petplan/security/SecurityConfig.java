@@ -81,6 +81,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/veterinarias").authenticated()
                 .requestMatchers("/api/veterinarias", "/api/veterinarias/**", "/api/administradores", "/api/administradores/**").hasRole("SUPERADMINISTRADOR")
                 .requestMatchers("/api/veterinarios", "/api/veterinarios/**").hasAnyRole("ADMINISTRADOR", "SUPERADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST, "/api/citas/{id}/aceptar").hasRole("VETERINARIO")
+                .requestMatchers(HttpMethod.GET, "/api/citas", "/api/citas/{id}").hasAnyRole("USUARIO", "VETERINARIO", "ADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST, "/api/citas").hasRole("USUARIO")
+                .requestMatchers(HttpMethod.PUT, "/api/citas/{id}").hasRole("USUARIO")
+                .requestMatchers(HttpMethod.DELETE, "/api/citas/{id}").hasRole("USUARIO")
                 .anyRequest().denyAll())
             .addFilterBefore(new TokenSesionFilter(cuentas), UsernamePasswordAuthenticationFilter.class)
             .build();

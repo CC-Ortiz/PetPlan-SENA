@@ -27,6 +27,16 @@ Route::middleware(PortalAuth::class.':USUARIO')->group(function(){
  Route::get('/mascotas/{id}/editar',[PortalController::class,'editarMascota'])->whereNumber('id')->name('mascotas.edit');
  Route::put('/mascotas/{id}',[PortalController::class,'guardarMascota'])->whereNumber('id')->name('mascotas.update');
  Route::delete('/mascotas/{id}',[PortalController::class,'eliminarMascota'])->whereNumber('id')->name('mascotas.destroy');
+ Route::get('/citas/agendar',[PortalController::class,'agendar'])->name('citas.create');
+ Route::post('/citas',[PortalController::class,'crearCita'])->name('citas.store');
+ Route::put('/citas/{id}',[PortalController::class,'reprogramar'])->whereNumber('id')->name('citas.update');
+ Route::delete('/citas/{id}',[PortalController::class,'cancelar'])->whereNumber('id')->name('citas.destroy');
+});
+Route::middleware(PortalAuth::class.':USUARIO,VETERINARIO,ADMINISTRADOR')->group(function(){
+ Route::get('/citas',[PortalController::class,'citas'])->name('citas.index');
+});
+Route::middleware(PortalAuth::class.':VETERINARIO')->group(function(){
+ Route::post('/citas/{id}/aceptar',[PortalController::class,'aceptar'])->whereNumber('id')->name('citas.aceptar');
 });
 Route::middleware(PortalAuth::class.':ADMINISTRADOR,SUPERADMINISTRADOR')->group(function(){
  Route::get('/cuentas',[PortalController::class,'cuentas'])->name('cuentas');

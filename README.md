@@ -1,4 +1,5 @@
 
+
 Frontend Laravel/PHP y backend Spring Boot con Spring Security.
 
 ## 1. Preparar el proyecto
@@ -49,15 +50,15 @@ $env:DB_PASSWORD='TU_CONTRASENA_MYSQL'
 ```
 
 Utiliza los mismos datos de conexión de `.env`.
-Para habilitar al administrador de demostración, copia en esta terminal el comando 
+Para habilitar al administrador de demostración, copia en esta terminal el comando `PETPLAN_ADMIN_CLINICAS` que mostró el seeder. Por ejemplo, en una base recién creada suele ser:
+
 ```powershell
 $env:PETPLAN_ADMIN_CLINICAS='3:1'
 ```
 
-Inicia Java:
 
 ```powershell
-.\mvnw.cmd spring-boot:run
+mvn spring-boot:run
 ```
 
 Tomcat escucha en el puerto 8080. Se requiere Maven instalado; el proyecto no incluye Maven Wrapper. Spring Boot valida el esquema sin modificarlo.
@@ -82,4 +83,5 @@ Todas tienen la contraseña inicial `Demo1234`.
 | Veterinario | `vet@demo.test` |
 | Administrador | `admin@demo.test` |
 | Superadministrador | `super@demo.test` |
+
 
