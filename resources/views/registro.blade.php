@@ -31,12 +31,12 @@
                         @csrf
                         <div class="form-grupo">
                             <label>Nombre</label>
-                            <input type="text" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre" required>
+                            <input type="text" name="nombres" value="{{ old('nombres') }}" placeholder="Nombre" required>
                         </div>
 
                         <div class="form-grupo">
                             <label>Apellido</label>
-                            <input type="text" name="apellido" value="{{ old('apellido') }}" placeholder="Apellido" required>
+                            <input type="text" name="apellidos" value="{{ old('apellidos') }}" placeholder="Apellido" required>
                         </div>
 
                         <div class="form-grupo">
@@ -46,25 +46,17 @@
 
                         <div class="form-grupo">
                             <label>Teléfono</label>
-                            <input type="text" name="num_contacto" value="{{ old('num_contacto') }}" required placeholder="Número de teléfono">
+                            <input type="text" name="numero_contacto" value="{{ old('numero_contacto') }}" required placeholder="Número de teléfono">
                         </div>
 
-                        <div class="form-grupo">
-                            <label>Tipo de Documento</label>
-                            <select name="tipo_documento_id">
-                                @foreach ($tiposDocumento as $tipo)
-                                    <option value="{{ $tipo->id_tipo_documento }}" @selected(old('tipo_documento_id') == $tipo->id_tipo_documento)>
-                                        {{ $tipo->nombre_tipo_documento }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
 
                         <div class="form-grupo">
                             <label>Número de Documento</label>
-                            <input type="text" name="num_documento" value="{{ old('num_documento') }}" required placeholder="Número de documento">
+                            <input type="text" name="numero_documento" value="{{ old('numero_documento') }}" required placeholder="Número de documento">
                         </div>
 
+                        <div class="form-grupo"><label for="user">Nombre de usuario</label><input id="user" type="text" name="user" value="{{ old('user') }}" required maxlength="50"></div>
                         <div class="form-grupo">
                             <label>Contraseña</label>
                             <input type="password" name="password" required placeholder="********">

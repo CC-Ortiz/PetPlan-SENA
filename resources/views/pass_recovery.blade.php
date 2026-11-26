@@ -19,6 +19,7 @@
                         </div>
                     @endif
 
+                @if($errors->any())<div role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
                 <form method="POST" action="{{ route('password.send') }}" novalidate>
                         @csrf
                     <div class="form-grupo">
