@@ -49,10 +49,15 @@ $env:DB_PASSWORD='TU_CONTRASENA_MYSQL'
 ```
 
 Utiliza los mismos datos de conexión de `.env`.
+Para habilitar al administrador de demostración, copia en esta terminal el comando 
+```powershell
+$env:PETPLAN_ADMIN_CLINICAS='3:1'
+```
+
 Inicia Java:
 
 ```powershell
-mvn spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
 Tomcat escucha en el puerto 8080. Se requiere Maven instalado; el proyecto no incluye Maven Wrapper. Spring Boot valida el esquema sin modificarlo.
@@ -78,4 +83,3 @@ Todas tienen la contraseña inicial `Demo1234`.
 | Administrador | `admin@demo.test` |
 | Superadministrador | `super@demo.test` |
 
-Son cuentas ficticias con contraseña conocida, solo para uso local.
