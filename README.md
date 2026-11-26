@@ -10,7 +10,7 @@ Desde la carpeta raíz del proyecto, en PowerShell:
 
 ```powershell
 composer install
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
+Copy-Item .env.example .env 
 ```
 
 Si `APP_KEY` está vacía en `.env`, ejecuta `php artisan key:generate` una sola vez. Configura la conexión en `.env` según tu instalación:
@@ -58,7 +58,7 @@ $env:PETPLAN_ADMIN_CLINICAS='3:1'
 
 
 ```powershell
-mvn spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
 Tomcat escucha en el puerto 8080. Se requiere Maven instalado; el proyecto no incluye Maven Wrapper. Spring Boot valida el esquema sin modificarlo.
@@ -83,5 +83,4 @@ Todas tienen la contraseña inicial `Demo1234`.
 | Veterinario | `vet@demo.test` |
 | Administrador | `admin@demo.test` |
 | Superadministrador | `super@demo.test` |
-
 

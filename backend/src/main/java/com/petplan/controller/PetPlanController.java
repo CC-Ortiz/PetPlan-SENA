@@ -37,4 +37,7 @@ public class PetPlanController {
  @PutMapping("/citas/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void reprogramar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id,@RequestBody Map<String,Object>d){clinica.reprogramar(actor,id,d);}
  @DeleteMapping("/citas/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void cancelar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){clinica.cancelar(actor,id);}
  @PostMapping("/citas/{id}/aceptar") @ResponseStatus(HttpStatus.NO_CONTENT) public void aceptar(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){clinica.confirmar(actor,id);}
+ @PostMapping("/citas/{id}/historia") @ResponseStatus(HttpStatus.NO_CONTENT) public void historia(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id,@RequestBody Map<String,Object>d){clinica.historia(actor,id,d);}
+ @GetMapping("/historial") public Object historial(@AuthenticationPrincipal CuentaService.Actor actor,@RequestParam Map<String,String> f){return clinica.historiales(actor,f);}
+ @GetMapping("/citas/{id}/mascotas") public Object mascotasCita(@AuthenticationPrincipal CuentaService.Actor actor,@PathVariable long id){return clinica.mascotasCita(actor,id);}
 }

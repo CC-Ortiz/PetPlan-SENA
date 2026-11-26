@@ -35,8 +35,13 @@ Route::middleware(PortalAuth::class.':USUARIO')->group(function(){
 Route::middleware(PortalAuth::class.':USUARIO,VETERINARIO,ADMINISTRADOR')->group(function(){
  Route::get('/citas',[PortalController::class,'citas'])->name('citas.index');
 });
+Route::middleware(PortalAuth::class.':USUARIO,VETERINARIO')->group(function(){
+ Route::get('/historial',[PortalController::class,'historial'])->name('historial.index');
+});
 Route::middleware(PortalAuth::class.':VETERINARIO')->group(function(){
  Route::post('/citas/{id}/aceptar',[PortalController::class,'aceptar'])->whereNumber('id')->name('citas.aceptar');
+ Route::get('/citas/{id}/historia',[PortalController::class,'historiaForm'])->whereNumber('id')->name('historias.create');
+ Route::post('/citas/{id}/historia',[PortalController::class,'historia'])->whereNumber('id')->name('historias.store');
 });
 Route::middleware(PortalAuth::class.':ADMINISTRADOR,SUPERADMINISTRADOR')->group(function(){
  Route::get('/cuentas',[PortalController::class,'cuentas'])->name('cuentas');
